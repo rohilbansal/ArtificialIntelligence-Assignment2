@@ -35,7 +35,25 @@ class ComputerPlayer:
     #
     def get_moves(self, tetris):
         # super simple current algorithm: just randomly move left, right, and rotate a few times
-        return random.choice("mnb") * random.randint(1, 10)
+	board = tetris.get_board()
+	#print(board)
+	min_column_height = [ min ([r for r in range(len(board)-1, 0, -1) if board[r][c] == "x" ] + [100,]) for c in range(0, len(board[0]))]
+	index = min_column_height.index(max(min_column_height))
+	#print(min_column_height)
+	print(index)
+	print(tetris.col)
+	print(board)
+	string_commands = ""
+	if(index < tetris.col):
+		count = tetris.col - index
+		for i in range(0, count):
+			string_commands += "b"
+	elif(index > tetris.col):
+		count = index - tetris.col
+		for i in range(0, count):
+			string_commands += "m"
+	return string_commands
+        #return random.choice("mnb") * random.randint(1, 10)
        
     # This is the version that's used by the animted version. This is really similar to get_moves,
     # except that it runs as a separate thread and you should access various methods and data in
@@ -55,6 +73,7 @@ class ComputerPlayer:
             board = tetris.get_board()
             column_heights = [ min([ r for r in range(len(board)-1, 0, -1) if board[r][c] == "x"  ] + [100,] ) for c in range(0, len(board[0]) ) ]
             index = column_heights.index(max(column_heights))
+	    print(board.get_next_piece)
 
             if(index < tetris.col):
                 tetris.left()
