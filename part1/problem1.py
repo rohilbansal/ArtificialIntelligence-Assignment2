@@ -70,6 +70,16 @@ class Board():
 			row = self.config[i]
 			if check in row:
 				return True
+
+		#vertical
+		flipped_rows = map(list, zip(*self.config)) #cols are flipped rows (Transpose)
+		t = ''
+		for row in flipped_rows:
+			for ele in row:
+				t += str(ele)
+			if check in t:
+				return True
+		
 		return False
 
 	def has_lost(self):
@@ -81,7 +91,18 @@ class Board():
 			row = self.config[i]
 			if check in row:
 				return True
+		
+		#vertical
+		flipped_rows = map(list, zip(*self.config)) #cols are flipped rows (Transpose)
+		t = ''
+		for row in flipped_rows:
+			for ele in row:
+				t += str(ele)
+			if check in t:
+				return True
+
 		return False
+
 
 	def get_meta(self, state):
 		return 0
