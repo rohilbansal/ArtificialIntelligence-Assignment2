@@ -45,6 +45,18 @@ class ComputerPlayer:
 			newVal[element] = 1
 	return newVal
 
+    def createBoardSnapshot(self, newBoardList, internalCount):
+	countList = {}
+	for elements in newBoardList:
+                count = 0
+                print(elements)
+                print(len(newBoardList[elements]))
+                for i in range(0, 10):
+                        if(newBoardList[elements][19-internalCount][i] == "x"):
+                                count += 1
+                countList[elements] = count
+	return countList
+
     def checkPermutations(self, board, tetris_orig):
 	print("Inside perm")
 	newBoardList = {}
@@ -57,7 +69,7 @@ class ComputerPlayer:
 		for j in range(0, i+1):
 			tetris1.rotate()
 			string_commands += "n"
-		print(tetris1.get_piece())
+		#print(tetris1.get_piece())
 		board2 = copy.deepcopy(board1)
 		min_column_height = [ min ([r for r in range(len(board2)-1, 0, -1) if board2[r][c] == "x" ] + [100,]) for c in range(0, len(board2[0]))]
 		index = min_column_height.index(max(min_column_height))
@@ -78,13 +90,48 @@ class ComputerPlayer:
 	countList = {}
 	for elements in newBoardList:
 		count = 0
-		print(elements)
-		print(len(newBoardList[elements]))
+		#print(elements)
+		#print(len(newBoardList[elements]))
 		for i in range(0, 10):
 			if(newBoardList[elements][19][i] == "x"):
 				count += 1
 		countList[elements] = count
-	print(countList)
+	print("before", countList)
+	print("count value", count)
+	'''
+	if(all(value == count for value in countList.values())):
+		for elements in newBoardList:
+                	count = 0
+                	#print(elements)
+                	#print(len(newBoardList[elements]))
+                	for i in range(0, 10):
+                        	if(newBoardList[elements][18][i] == "x"):
+                                	count += 1
+                	countList[elements] = count
+		print("inside", countList)'''
+	j = 1
+ 	while(all(value == count for value in countList.values()) and j < 20):
+                for elements in newBoardList:
+                        count = 0
+                        #print(elements)
+                        #print(len(newBoardList[elements]))
+                        for i in range(0, 10):
+                                if(newBoardList[elements][19-j][i] == "x"):
+                                        count += 1
+                        countList[elements] = count
+		print("inside j count", countList)
+		j += 1
+                print("inside j value", j)
+
+	'''
+	i = 1
+	while (all( value == count for value in countList.values())) and (i<20):
+		print("inside while")
+		countList = self.createBoardSnapshot(newBoardList, i)
+		print("new",countList)
+		i += 1
+		print("rohil")'''
+	
 	#print(max(countList.iteritems(), key=operator.itemgetter(1))[0])
 	return(max(countList.iteritems(), key=operator.itemgetter(1))[0]) 
 	#print(tetris1.get_board())
@@ -99,8 +146,9 @@ class ComputerPlayer:
 	print(min_column_height)
 	print(self.calculateFreq(min_column_height))
 
-	return(self.checkPermutations(board, tetris))
-	
+	strVal = self.checkPermutations(board, tetris)
+	print(strVal)
+	return strVal
 	'''	
 	string_commands = ""
 
