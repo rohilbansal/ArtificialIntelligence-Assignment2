@@ -54,6 +54,35 @@ class Board():
 			successors.append(self.add_piece(place[0], place[1], data))
 		return successors
 
+	def has_tied(self):
+		for i in xrange(0, self.n):
+			for j in range(0, self.n):
+				if self.config[i][j] == '.':
+					return False
+		return True
+
+	def has_won(self):
+		# horizontal
+		check = ''
+		for i in xrange(0, self.k):
+			check += 'b'
+		for i in xrange(0, self.n):
+			row = self.config[i]
+			if check in row:
+				return True
+		return False
+
+	def has_lost(self):
+		# horizontal
+		check = ''
+		for i in xrange(0, self.k):
+			check += 'w' 
+		for i in xrange(0, self.n):
+			row = self.config[i]
+			if check in row:
+				return True
+		return False
+
 	def get_meta(self, state):
 		return 0
 
@@ -76,6 +105,7 @@ def print_stuff_single_line(stuff, n):
 	for row in xrange(0, n):
 		for col in xrange(0, n):
 			print stuff[row][col],
+	print ''#avoids continuation of further prints
 
 n = (int)(sys.argv[1])
 k = (int)(sys.argv[2])
@@ -109,3 +139,4 @@ for successor in successors:
 
 print_stuff_single_line(target, n)
 
+print b.has_won(), b.has_lost(), b.has_tied()
