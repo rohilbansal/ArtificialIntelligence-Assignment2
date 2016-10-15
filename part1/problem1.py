@@ -9,18 +9,6 @@ class Board():
 		self.config = [['.']*n]*n
 		self.open_places_indices = []
 
-	def print_board(self):
-		for row in xrange(0, self.n):
-			for col in xrange(0, self.n):
-				print self.config[row][col],
-		print '' #avoids continuation of further prints
-
-	def print_board_like_board(self):
-		for row in xrange(0, self.n):
-			for col in xrange(0, self.n):
-				print self.config[row][col],
-			print ''
-
 	def build_board(self, data):
 		rows = [data[i:i+self.n] for i in range(0, len(data), self.n)]
 		self.config = []
@@ -58,43 +46,7 @@ class Board():
 			successors.append(self.add_piece(place[0], place[1], data, player))
 		return successors
 
-	# def has_tied(self):
-	# 	for i in xrange(0, self.n):
-	# 		for j in range(0, self.n):
-	# 			if self.config[i][j] == '.':
-	# 				return False
-	# 	return True
-
-	# def has_won(self, player):
-	# 	check = ''
-	# 	for i in xrange(0, self.k):
-	# 		check += player
-
-	# 	# horizontal
-	# 	for i in xrange(0, self.n):
-	# 		row = self.config[i]
-	# 		if check in row:
-	# 			return True
-
-	# 	#vertical
-	# 	flipped_rows = map(list, zip(*self.config)) #cols are flipped rows (Transpose)
-	# 	t = ''
-	# 	for row in flipped_rows:
-	# 		for ele in row:
-	# 			t += str(ele)
-	# 		if check in t:
-	# 			return True
-		
-	# 	#diagonal
-	# 	for diag in self.get_diagonals():
-	# 		t = ''
-	# 		for ele in diag:
-	# 			t += ele
-	# 		if check in t:
-	# 			return True
-		
-	# 	return False
-
+	
 	def has_lost(self, player):
 		check = ''
 		for i in xrange(0, self.k):
@@ -138,9 +90,6 @@ class Board():
 		diags.extend(a.diagonal(i) for i in range(a.shape[1]-1,-a.shape[0],-1))
 		return [n.tolist() for n in diags]
 
-	def get_meta(self, state):
-		return 0
-
 class CohCoh():
 	def __init__(self, state):
 		self.state = state
@@ -171,8 +120,6 @@ k = (int)(sys.argv[2])
 b = Board(n, k)
 data = sys.argv[3]
 b.build_board(data)
-#b.print_board_like_board()
-
 available_time = (int)(sys.argv[4])
 
 start_time = time.time()
@@ -182,29 +129,27 @@ start_time = time.time()
 
 availables_black = 0
 successors_black = b.get_successors('b')
-print successors_black
-print "Y:",len(successors_black)
-
+bad_indices_for_black = []
+i = 0
 for successor_black in successors_black:
 	bdash = Board(n, k)
 	bdash.config = successor_black
 	if not bdash.has_lost('b'):
 		availables_black += 1
+	# else:
+	# 	b.open_places_indices.remove(i)
+	# i += 1
+	else:
+		bad_indices_for_black.append(b.open_places_indices[i])
+	i += 1
 
-print "Y ilf:",availables_black
-
-
+print "Bad indices for black", bad_indices_for_black
 successors = b.get_successors('w')
-print successors
-print "X:",len(successors)
-
-
 
 target = successors[0]
 availables = []
 
 open_places_new_indices = []
-print "All open",b.open_places_indices
 
 i = 0
 for successor in successors:
@@ -214,77 +159,77 @@ for successor in successors:
 		availables.append(bdash)
 		open_places_new_indices.append(b.open_places_indices[i])
 	i += 1
-
-#print [ available.config for available in availables]
-
-print "X ilf:",len(availables)
-
-print "Available ILF Indices", open_places_new_indices
+print "Open for white", open_places_new_indices
 
 coh_cohs = []
 ctr = 0
 for available in availables:
-	c = CohCoh(available.config)
-	sum_whites_x, sum_whites_y, sum_blacks_x, sum_blacks_y = 0.0, 0.0, 0.0, 0.0
-	coh_cohs.append(c)
-	i = open_places_new_indices[ctr][0]
-	j = open_places_new_indices[ctr][1]
-	#search vertical: i-k+1 to i+k-1, j same
-	for p in xrange(i-k+1, i+k):
-		if p >= 0 and p < n and p != i:
-			if b.config[p][j] == 'w':
-				c.whites.append((p, j))
-				sum_whites_x += p
-				sum_whites_y += j
-			if b.config[p][j] == 'b':
-				c.blacks.append((p, j))
-				sum_blacks_x += p
-				sum_blacks_y += j 
-	#search horizontal: j-k+1 to j+k-1, i same
-	for p in xrange(j-k+1, j+k):
-		if p >= 0 and p < n and p != j:
-			if b.config[i][p] == 'w':
-				c.whites.append((i, p))
-				sum_whites_x += i
-				sum_whites_y += p
-			if b.config[i][p] == 'b':
-				c.blacks.append((i, p))
-				sum_blacks_x += i
-				sum_blacks_y += p
-	#search obtuse diagonal: i-k+1, j-k+1 to i+k-1, j+k-1
-	for p,q in zip(xrange(i-k+1,i+k), xrange(j-k+1,j+k)):
-		if p >= 0 and p < n and q >= 0 and q < n:
-			if b.config[p][q] == 'w':
-				c.whites.append((p, q))
-				sum_whites_x += p
-				sum_whites_y += q
-			if b.config[p][q] == 'b':
-				c.whites.append((p, q))
-				sum_blacks_x += p
-				sum_blacks_y += q
-	#search acute diagonal: i-k+1, j+k-1 to i+k-1, j-k+1
-	for p,q in zip(xrange(i-k+1,i+k), xrange(j+k-1,j-k)):
-		if p >= 0 and p < n and q >= 0 and q < n:
-			if b.config[p][q] == 'w':
-				c.whites.append((p, q))
-				sum_whites_x += p
-				sum_whites_y += q
-			if b.config[p][q] == 'b':
-				c.whites.append((p, q))
-				sum_blacks_x += p
-				sum_blacks_y += q
+	if open_places_new_indices[ctr] not in bad_indices_for_black:
 
-	if len(c.whites) > 0:
-		c.white_centroid_x = sum_whites_x / len(c.whites)
-		c.white_centroid_y = sum_whites_y / len(c.whites) 
-	if len(c.blacks) > 0:
-		c.black_centroid_x = sum_blacks_x / len(c.blacks)
-		c.black_centroid_y = sum_blacks_y / len(c.blacks)
-	print "Available", available.config, "Whites", c.whites, "Blacks", c.blacks,
-	c.alpha = math.sqrt(abs(c.white_centroid_x - i) ** 2 + abs(c.white_centroid_y - j) ** 2)
-	c.beta = math.sqrt(abs(c.black_centroid_x - i) ** 2 + abs(c.black_centroid_y - j) ** 2)
+		i = open_places_new_indices[ctr][0]
+		j = open_places_new_indices[ctr][1]
 
-	print "Alpha", c.alpha, "Beta", c.beta
+		c = CohCoh(available.config)
+		sum_whites_x, sum_whites_y, sum_blacks_x, sum_blacks_y = 0.0, 0.0, 0.0, 0.0
+		coh_cohs.append(c)
+		
+
+		#search vertical: i-k+1 to i+k-1, j same
+		for p in xrange(i-k+1, i+k):
+			if p >= 0 and p < n and p != i:
+				if b.config[p][j] == 'w':
+					c.whites.append((p, j))
+					sum_whites_x += p
+					sum_whites_y += j
+				if b.config[p][j] == 'b':
+					c.blacks.append((p, j))
+					sum_blacks_x += p
+					sum_blacks_y += j 
+		#search horizontal: j-k+1 to j+k-1, i same
+		for p in xrange(j-k+1, j+k):
+			if p >= 0 and p < n and p != j:
+				if b.config[i][p] == 'w':
+					c.whites.append((i, p))
+					sum_whites_x += i
+					sum_whites_y += p
+				if b.config[i][p] == 'b':
+					c.blacks.append((i, p))
+					sum_blacks_x += i
+					sum_blacks_y += p
+		#search obtuse diagonal: i-k+1, j-k+1 to i+k-1, j+k-1
+		for p,q in zip(xrange(i-k+1,i+k), xrange(j-k+1,j+k)):
+			if p >= 0 and p < n and q >= 0 and q < n:
+				if b.config[p][q] == 'w':
+					c.whites.append((p, q))
+					sum_whites_x += p
+					sum_whites_y += q
+				if b.config[p][q] == 'b':
+					c.whites.append((p, q))
+					sum_blacks_x += p
+					sum_blacks_y += q
+		#search acute diagonal: i-k+1, j+k-1 to i+k-1, j-k+1
+		for p,q in zip(xrange(i-k+1,i+k), xrange(j+k-1,j-k)):
+			if p >= 0 and p < n and q >= 0 and q < n:
+				if b.config[p][q] == 'w':
+					c.whites.append((p, q))
+					sum_whites_x += p
+					sum_whites_y += q
+				if b.config[p][q] == 'b':
+					c.whites.append((p, q))
+					sum_blacks_x += p
+					sum_blacks_y += q
+
+		if len(c.whites) > 0:
+			c.white_centroid_x = sum_whites_x / len(c.whites)
+			c.white_centroid_y = sum_whites_y / len(c.whites) 
+		if len(c.blacks) > 0:
+			c.black_centroid_x = sum_blacks_x / len(c.blacks)
+			c.black_centroid_y = sum_blacks_y / len(c.blacks)
+		print "Available", available.config, "Whites", c.whites, "Blacks", c.blacks,
+		c.alpha = math.sqrt(abs(c.white_centroid_x - i) ** 2 + abs(c.white_centroid_y - j) ** 2)
+		c.beta = math.sqrt(abs(c.black_centroid_x - i) ** 2 + abs(c.black_centroid_y - j) ** 2)
+
+		print "Alpha", c.alpha, "Beta", c.beta
 	ctr += 1
 
 solution = None
@@ -297,7 +242,6 @@ if len(availables) > availables_black:
 			max_alpha_plus_beta = cohcoh.alpha + cohcoh.beta
 			solution = cohcoh.state
 	print "Solution:"
-	print_stuff_single_line(solution, n)
 
 else:
 	#play safe
@@ -308,7 +252,9 @@ else:
 			max_alpha = cohcoh.alpha
 			solution = cohcoh.state
 	print "Solution:"
-	print_stuff_single_line(solution, n)
 
-#print "Solution:"
-#print_stuff_single_line(availables[randint(0,len(availables)-1)].config, n)
+if solution is not None:
+	print_stuff_single_line(solution, n)
+else:
+	#iQuit
+	print_stuff_single_line(b.config, n)
