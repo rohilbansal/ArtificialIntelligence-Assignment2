@@ -101,7 +101,7 @@ class ComputerPlayer:
                 j += 1
                 #print("inside j value", j)
 	print(newBoardList)
-	return countList
+	return newBoardList
 	#return(max(countList.iteritems(), key=operator.itemgetter(1))[0])
 
 
@@ -136,8 +136,11 @@ class ComputerPlayer:
 		tetris1.down()
 		newBoardList[string_commands] = [tetris1.get_board(),0]
 		#print(newBoardList)
-	countList = self.calculateNumberOfXs(newBoardList, tetris_orig)
-	return(max(countList.iteritems(), key=operator.itemgetter(1))[0])
+	newBoardList = self.calculateNumberOfXs(newBoardList, tetris_orig)
+	temp_dict = {}
+	for val in newBoardList:
+		temp_dict[val] = newBoardList[val][1]
+	return(max(temp_dict, key=(lambda key: temp_dict[key])))
 	#print(newBoardList)
 	'''
 	countList = {}
