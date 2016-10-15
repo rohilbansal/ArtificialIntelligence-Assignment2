@@ -33,17 +33,39 @@ class ComputerPlayer:
     #     issue game commands
     #   - tetris.get_board() returns the current state of the board, as a list of strings.
     #
+
+    def calculateFreq(self, list1):
+	newVal = {}
+	for element in list1:
+		if(newVal.get(element)!= None):
+			val = newVal.get(element)
+			val += 1
+			newVal[element] = val
+		else:
+			newVal[element] = 1
+	return newVal
+
+    def checkPermutations(self, tetris):
+	board1 = tetris1.get_board()
+	tetris.down()
+	print(board1)
+
     def get_moves(self, tetris):
         # super simple current algorithm: just randomly move left, right, and rotate a few times
 	board = tetris.get_board()
 	#print(board)
 	min_column_height = [ min ([r for r in range(len(board)-1, 0, -1) if board[r][c] == "x" ] + [100,]) for c in range(0, len(board[0]))]
 	index = min_column_height.index(max(min_column_height))
-	#print(min_column_height)
-	print(index)
-	print(tetris.col)
-	print(board)
+	print(min_column_height)
+	print(self.calculateFreq(min_column_height))
+
+	list1 = tetris.get_piece()
+	tetris.rotate()
+	list2 = tetris.get_piece()
+	print(tetris.get_next_piece())
+		
 	string_commands = ""
+
 	if(index < tetris.col):
 		count = tetris.col - index
 		for i in range(0, count):
@@ -52,8 +74,11 @@ class ComputerPlayer:
 		count = index - tetris.col
 		for i in range(0, count):
 			string_commands += "m"
+	
 	return string_commands
         #return random.choice("mnb") * random.randint(1, 10)
+	
+	
        
     # This is the version that's used by the animted version. This is really similar to get_moves,
     # except that it runs as a separate thread and you should access various methods and data in
@@ -85,6 +110,9 @@ class ComputerPlayer:
 
 ###################
 #### main program
+
+#tetris1 = SimpleTetris()
+#tetris1.start_game(ComputerPlayer())
 
 (player_opt, interface_opt) = sys.argv[1:3]
 
