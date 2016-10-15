@@ -4,7 +4,7 @@
 from AnimatedTetris import *
 from SimpleTetris import *
 from kbinput import *
-import time, sys
+import time, sys, copy, operator
 
 class HumanPlayer:
     def get_moves(self, tetris):
@@ -45,10 +45,50 @@ class ComputerPlayer:
 			newVal[element] = 1
 	return newVal
 
-    def checkPermutations(self, tetris):
-	board1 = tetris1.get_board()
-	tetris.down()
-	print(board1)
+    def checkPermutations(self, board, tetris_orig):
+	print("Inside perm")
+	newBoardList = {}
+	tetris1 = copy.deepcopy(tetris_orig)
+	board1 = tetris_orig.get_board()
+	for i in range(0, 4):
+		string_commands = ""
+		tetris1 = copy.deepcopy(tetris_orig)
+		board1 = tetris_orig.get_board()
+		for j in range(0, i+1):
+			tetris1.rotate()
+			string_commands += "n"
+		print(tetris1.get_piece())
+		board2 = copy.deepcopy(board1)
+		min_column_height = [ min ([r for r in range(len(board2)-1, 0, -1) if board2[r][c] == "x" ] + [100,]) for c in range(0, len(board2[0]))]
+		index = min_column_height.index(max(min_column_height))
+		
+		if(index < tetris1.col):
+                	count = tetris1.col - index
+                	for i in range(0, count):
+				string_commands += "b"
+				tetris1.left()
+        	elif(index > tetris1.col):
+                	count = index - tetris1.col
+                	for i in range(0, count):
+				string_commands += "m"
+				tetris1.right()
+		tetris1.down()
+		newBoardList[string_commands] = tetris1.get_board()
+	#print(newBoardList)
+	countList = {}
+	for elements in newBoardList:
+		count = 0
+		print(elements)
+		print(len(newBoardList[elements]))
+		for i in range(0, 10):
+			if(newBoardList[elements][19][i] == "x"):
+				count += 1
+		countList[elements] = count
+	print(countList)
+	#print(max(countList.iteritems(), key=operator.itemgetter(1))[0])
+	return(max(countList.iteritems(), key=operator.itemgetter(1))[0]) 
+	#print(tetris1.get_board())
+	#print(tetris1.get_piece())
 
     def get_moves(self, tetris):
         # super simple current algorithm: just randomly move left, right, and rotate a few times
@@ -59,11 +99,9 @@ class ComputerPlayer:
 	print(min_column_height)
 	print(self.calculateFreq(min_column_height))
 
-	list1 = tetris.get_piece()
-	tetris.rotate()
-	list2 = tetris.get_piece()
-	print(tetris.get_next_piece())
-		
+	return(self.checkPermutations(board, tetris))
+	
+	'''	
 	string_commands = ""
 
 	if(index < tetris.col):
@@ -75,7 +113,7 @@ class ComputerPlayer:
 		for i in range(0, count):
 			string_commands += "m"
 	
-	return string_commands
+	return string_commands'''
         #return random.choice("mnb") * random.randint(1, 10)
 	
 	
