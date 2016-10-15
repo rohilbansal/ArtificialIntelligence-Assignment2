@@ -45,18 +45,27 @@ class ComputerPlayer:
 			newVal[element] = 1
 	return newVal'''
 
-    def calculateNumberOfXs(self, newBoardList):
+    def calculateNumberOfXs(self, newBoardList, tetris_orig):
 	countList = {}
+	orig_board = tetris_orig.get_board()
         for elements in newBoardList:
                 count = 0
+		count2 = 0
                 #print(elements)
                 #print(len(newBoardList[elements]))
 		#print(newBoardList[elements][0][19])
                 for i in range(0, 10):
                         if(newBoardList[elements][0][19][i] == "x"):
                                 count += 1
-		newBoardList[elements][1] = count
-                countList[elements] = count
+			if(orig_board[19][i] == "x"):
+				count2 += 1
+		print("Orig",count2,"new",count)
+		if(count2 > count):
+			newBoardList[elements][1] = 10+count
+			countList[elements] = 10+count
+		else:
+			newBoardList[elements][1] = count
+                	countList[elements] = count
         #print("before", countList)
         #print("count value", count)
         '''
@@ -74,13 +83,20 @@ class ComputerPlayer:
         while(all(value == count for value in countList.values()) and j < 20):
                 for elements in newBoardList:
                         count = 0
+			count2 = 0
                         #print(elements)
                         #print(len(newBoardList[elements]))
                         for i in range(0, 10):
                                 if(newBoardList[elements][0][19-j][i] == "x"):
                                         count += 1
-			newBoardList[elements][1] = count
-                        countList[elements] = count
+				if(orig_board[19-j][i] == "x"):
+					count2 += 1
+			if(count2 > count):
+                        	newBoardList[elements][1] = 10+count
+                        	countList[elements] = 10+count
+			else:
+				newBoardList[elements][1] = count
+                        	countList[elements] = count
                 #print("inside j count", countList)
                 j += 1
                 #print("inside j value", j)
@@ -105,7 +121,7 @@ class ComputerPlayer:
 		board2 = copy.deepcopy(board1)
 		min_column_height = [ min ([r for r in range(len(board1)-1, 0, -1) if board1[r][c] == "x" ] + [100,]) for c in range(0, len(board1[0]))]
 		index = min_column_height.index(max(min_column_height))
-		print(min_column_height)
+		#print(min_column_height)
 		
 		if(index < tetris1.col):
                 	count = tetris1.col - index
@@ -120,7 +136,7 @@ class ComputerPlayer:
 		tetris1.down()
 		newBoardList[string_commands] = [tetris1.get_board(),0]
 		#print(newBoardList)
-	countList = self.calculateNumberOfXs(newBoardList)
+	countList = self.calculateNumberOfXs(newBoardList, tetris_orig)
 	return(max(countList.iteritems(), key=operator.itemgetter(1))[0])
 	#print(newBoardList)
 	'''
