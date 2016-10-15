@@ -18,7 +18,7 @@ class HumanPlayer:
             commands =  { "b": tetris.left, "n": tetris.rotate, "m": tetris.right, " ": tetris.down }
             commands[c]()
 
-#####
+######
 # This is the part you'll want to modify!
 # Replace our super simple algorithm with something better
 #
