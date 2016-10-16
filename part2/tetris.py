@@ -64,7 +64,7 @@ class ComputerPlayer:
 			newBoardList[elements][1] = 10+count
 			countList[elements] = 10+count
 		else:
-			newBoardList[elements][1] = count
+			newBoardList[elements][1] = (2.0)*count
                 	countList[elements] = count
         #print("before", countList)
         #print("count value", count)
@@ -95,7 +95,7 @@ class ComputerPlayer:
                         	newBoardList[elements][1] = 10+count
                         	countList[elements] = 10+count
 			else:
-				newBoardList[elements][1] = count
+				newBoardList[elements][1] = (2.0)*count
                         	countList[elements] = count
                 #print("inside j count", countList)
                 j += 1
@@ -105,16 +105,27 @@ class ComputerPlayer:
 	#return(max(countList.iteritems(), key=operator.itemgetter(1))[0])
     
     def calculateAggregateHeight(self, newBoardList, tetris_orig):
+	orig_board = tetris_orig.get_board()
 	for elements in newBoardList:
 		count = 0
+		final_count = 0
+		final_count2 = 0
 		for i in range(0,10):
+			count = 0
+			count2 = 0
 			for j in range(0,20):
-				if(newBoardList[elements][0][j][i] == "x"):
-					count += 20-j
-					break;
-		oldCount = newBoardList[elements][1]
-		count = oldCount + (-2.0)*count
-		newBoardList[elements][1] = count
+				if(count == 0):
+					if(newBoardList[elements][0][j][i] == "x"):
+						count += 1
+						final_count += 20-j
+				if(count2 == 0):
+					if(orig_board[j][i] == "x"):
+						count2 += 1
+						final_count2 += 20-j
+		#oldCount = newBoardList[elements][1]
+		#count = oldCount + (-2.0)*count
+		if(final_count > final_count2):
+			newBoardList[elements][1] += -10.0
 	return newBoardList
 
     def checkIfTouchingWall(self, newBoardList, tetris_orig):
@@ -132,7 +143,7 @@ class ComputerPlayer:
 			if(orig_board[i][9] == "x"):
 				count2 += 1
 		if(count > count2):
-			newBoardList[elements][1] += 1.0
+			newBoardList[elements][1] += 0.5
 	return newBoardList
 
     def checkTouchingGround(self, newBoardList, tetris_orig):
@@ -146,7 +157,7 @@ class ComputerPlayer:
 			if(orig_board[19][i] == "x"):
 				count2 += 1
 		if(count > count2):
-			newBoardList[elements][1] = (count - count2)*5.0
+			newBoardList[elements][1] += 5.0
 	return newBoardList 
 
     def calculateHoles(self, newBoardList, tetris_orig):
@@ -167,7 +178,7 @@ class ComputerPlayer:
 			if(count2 != 0):
 				holes2 += 10-count2
 		if(holes > holes2):
-			newBoardList[elements][1] += -1.0
+			newBoardList[elements][1] += -3.0
 	return newBoardList
 
 
