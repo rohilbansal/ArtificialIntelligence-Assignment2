@@ -113,10 +113,27 @@ class ComputerPlayer:
 					count += 20-j
 					break;
 		oldCount = newBoardList[elements][1]
-		count = oldCount + (-0.03)*count
+		count = oldCount + (-2.0)*count
 		newBoardList[elements][1] = count
 	return newBoardList
-		
+
+    def checkIfTouchingWall(self, newBoardList, tetris_orig):
+	orig_board = tetris_orig.get_board()
+	for elements in newBoardList:
+		count = 0
+		count2 = 0
+		for i in range(0, 20):
+			if(newBoardList[elements][0][i][0] == "x"):
+				count += 1
+			if(newBoardList[elements][0][i][9] == "x"):
+				count += 1
+			if(orig_board[i][0] == "x"):
+				count2 += 1
+			if(orig_board[i][9] == "x"):
+				count2 += 1
+		if(count > count2):
+			newBoardList[elements][1] += 0.2
+	return newBoardList
 				
 
 
@@ -192,12 +209,9 @@ class ComputerPlayer:
 		#print(newBoardList)'''
 	print(newBoardList)
 	newBoardList = self.calculateNumberOfXs(newBoardList, tetris_orig)
-	temp_dict = {}
-	for val in newBoardList:
-                temp_dict[val] = newBoardList[val][1]
-	print(max(temp_dict, key=(lambda key: temp_dict[key])))
 	print(newBoardList)
 	newBoardList = self.calculateAggregateHeight(newBoardList, tetris_orig)
+	newBoardList = self.checkIfTouchingWall(newBoardList, tetris_orig)
 	temp_dict = {}
 	for val in newBoardList:
 		temp_dict[val] = newBoardList[val][1]
