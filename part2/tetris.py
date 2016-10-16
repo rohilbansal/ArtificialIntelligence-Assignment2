@@ -132,9 +132,43 @@ class ComputerPlayer:
 			if(orig_board[i][9] == "x"):
 				count2 += 1
 		if(count > count2):
-			newBoardList[elements][1] += 0.2
+			newBoardList[elements][1] += 1.0
 	return newBoardList
-				
+
+    def checkTouchingGround(self, newBoardList, tetris_orig):
+	orig_board = tetris_orig.get_board()
+	for elements in newBoardList:
+		count = 0
+		count2 = 0
+		for i in range(0, 10):
+			if(newBoardList[elements][0][19][i] == "x"):
+				count += 1
+			if(orig_board[19][i] == "x"):
+				count2 += 1
+		if(count > count2):
+			newBoardList[elements][1] = (count - count2)*5.0
+	return newBoardList 
+
+    def calculateHoles(self, newBoardList, tetris_orig):
+	holes = 0
+	holes2= 0
+	orig_board = tetris_orig.get_board()
+	for elements in newBoardList:
+		for i in range(0, 20):
+			count = 0
+			count2 = 0
+			for j in range(0, 10):
+				if(newBoardList[elements][0][19-i][j] == "x"):
+					count += 1
+				if(orig_board[19-i][j] == "x"):
+					count2 += 1
+			if(count != 0):
+				holes += 10-count
+			if(count2 != 0):
+				holes2 += 10-count2
+		if(holes > holes2):
+			newBoardList[elements][1] += -1.0
+	return newBoardList
 
 
     def checkPermutations(self, board, tetris_orig):
@@ -212,9 +246,12 @@ class ComputerPlayer:
 	print(newBoardList)
 	newBoardList = self.calculateAggregateHeight(newBoardList, tetris_orig)
 	newBoardList = self.checkIfTouchingWall(newBoardList, tetris_orig)
+	newBoardList = self.calculateHoles(newBoardList, tetris_orig)
+	newBoardList = self.checkTouchingGround(newBoardList, tetris_orig)
 	temp_dict = {}
 	for val in newBoardList:
 		temp_dict[val] = newBoardList[val][1]
+	print(temp_dict)
 	return(max(temp_dict, key=(lambda key: temp_dict[key])))
 	#print(newBoardList)
 	'''
