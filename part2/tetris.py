@@ -100,7 +100,7 @@ class ComputerPlayer:
                 #print("inside j count", countList)
                 j += 1
                 #print("inside j value", j)
-	print(newBoardList)
+	#print(newBoardList)
 	return newBoardList
 	#return(max(countList.iteritems(), key=operator.itemgetter(1))[0])
     
@@ -133,7 +133,46 @@ class ComputerPlayer:
 			tetris1.rotate()
 			string_commands += "n"
 		#print(tetris1.get_piece())
-		board2 = copy.deepcopy(board1)
+		#board2 = copy.deepcopy(board1)
+			pieceInfo = tetris1.get_piece()
+			pieceColumn = pieceInfo[2]
+			print("piece column", pieceColumn)
+			string_commands_copy = string_commands
+			tetris2 = copy.deepcopy(tetris1)
+			for i in range(0, pieceColumn):
+				for j in range(0, i+1):
+					tetris2.left()
+					string_commands_copy += "b"
+				tetris2.down()
+				newBoardList[string_commands_copy] = [tetris2.get_board(), 0]
+				string_commands_copy = string_commands
+				tetris2 = copy.deepcopy(tetris1)
+			string_commands_copy = string_commands
+			tetris2 = copy.deepcopy(tetris1)
+			for i in range(pieceColumn, 10):
+				for j in range(pieceColumn, 10):
+					tetris2.right()
+					string_commands_copy += "m"
+				tetris2.down()
+				newBoardList[string_commands_copy] = [tetris2.get_board(), 0]
+				string_commands_copy = string_commands
+				tetris2 = copy.deepcopy(tetris1)
+		'''
+		while(pieceColumn >= 0):
+			tetris1.left()
+			string_commands_copy += "b"
+			tetris1.down()
+			newBoardList[string_commands_copy] = [tetris1.get_board(), 0]
+			pieceColumn -= 1
+			tetris1 = copy.deepcopy(tetris_orig)
+		string_commands_copy = string_commands
+		while(pieceColumn < 20):
+			tetris1.right()
+			string_commands_copy += "m"
+			tetris1.down()
+			newBoardList[string_commands_copy] = [tetris1.get_board(), 0]
+			tetris1 = copy.deepcopy(tetris_orig)
+
 		min_column_height = [ min ([r for r in range(len(board1)-1, 0, -1) if board1[r][c] == "x" ] + [100,]) for c in range(0, len(board1[0]))]
 		index = min_column_height.index(max(min_column_height))
 		#print(min_column_height)
@@ -150,8 +189,13 @@ class ComputerPlayer:
 				tetris1.right()
 		tetris1.down()
 		newBoardList[string_commands] = [tetris1.get_board(),0]
-		#print(newBoardList)
+		#print(newBoardList)'''
+	print(newBoardList)
 	newBoardList = self.calculateNumberOfXs(newBoardList, tetris_orig)
+	temp_dict = {}
+	for val in newBoardList:
+                temp_dict[val] = newBoardList[val][1]
+	print(max(temp_dict, key=(lambda key: temp_dict[key])))
 	print(newBoardList)
 	newBoardList = self.calculateAggregateHeight(newBoardList, tetris_orig)
 	temp_dict = {}
