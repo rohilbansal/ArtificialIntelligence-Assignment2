@@ -61,10 +61,10 @@ class ComputerPlayer:
 				count2 += 1
 		#print("Orig",count2,"new",count)
 		if(count2 > count):
-			newBoardList[elements][1] = 10+count
+			newBoardList[elements][1] += (10.0)*count
 			countList[elements] = 10+count
 		else:
-			newBoardList[elements][1] = (3.0)*count
+			newBoardList[elements][1] += (4.0)*count
                 	countList[elements] = count
         #print("before", countList)
         #print("count value", count)
@@ -92,10 +92,10 @@ class ComputerPlayer:
 				if(orig_board[19-j][i] == "x"):
 					count2 += 1
 			if(count2 > count):
-                        	newBoardList[elements][1] = 10+count
+                        	newBoardList[elements][1] += (10.0)*count
                         	countList[elements] = 10+count
 			else:
-				newBoardList[elements][1] = (3.0)*count
+				newBoardList[elements][1] += (4.0)*count
                         	countList[elements] = count
                 #print("inside j count", countList)
                 j += 1
@@ -181,6 +181,53 @@ class ComputerPlayer:
 			newBoardList[elements][1] += -1.0
 	return newBoardList
 
+    def calculateWells(self, newBoardList, tetris_orig):
+	orig_board = tetris_orig.get_board()
+	for elements in newBoardList:
+		count = 0
+                final_count = 0
+                list1 = []
+                for i in range(0,10):
+			count = 0
+			for j in range(0, 20):
+				if(newBoardList[elements][0][j][i] == "x"):
+					count = 20-j
+					break
+			if(i == 0):
+				final_count = count
+			else:
+				list1.append(float(abs(final_count-count)))
+				final_count = count
+		sumVal = 0
+		#print(list1)
+		for values in list1:
+			sumVal += values
+		print(sumVal)
+		for i in range(0,10):
+                        count = 0
+                        for j in range(0, 20):
+                                if(orig_board[j][i] == "x"):
+                                        count = 20-j
+                                        break
+                        if(i == 0):
+                                final_count = count
+                        else:
+                                list1.append(float(abs(final_count-count)))
+                                final_count = count
+		sumVal2 = 0
+		for values in list1:
+			sumVal2 += values
+		print(sumVal2)
+		if(sumVal > sumVal2):
+			newBoardList[elements] += (sumVal-sumVal2)*(-3.0)
+		#elif( sumVal2 > sumVal):
+		#	newBoardList[elements] += (sumVal2-sumVal)*(3.0)
+	return newBoardList
+
+					
+					
+ 
+
 
     def checkPermutations(self, board, tetris_orig):
 	#print("Inside perm")
@@ -262,12 +309,13 @@ class ComputerPlayer:
         #print("Height",temp_dict)
 
 	newBoardList = self.checkIfTouchingWall(newBoardList, tetris_orig)
-	newBoardList = self.calculateHoles(newBoardList, tetris_orig)
+	#newBoardList = self.calculateHoles(newBoardList, tetris_orig)
 	newBoardList = self.checkTouchingGround(newBoardList, tetris_orig)
+	newBoardList = self.calculateWells(newBoardList, tetris_orig)
 	temp_dict = {}
 	for val in newBoardList:
 		temp_dict[val] = newBoardList[val][1]
-	#print(temp_dict)
+	print(temp_dict)
 	return(max(temp_dict, key=(lambda key: temp_dict[key])))
 	#print(newBoardList)
 	'''
