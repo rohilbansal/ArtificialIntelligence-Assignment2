@@ -18,9 +18,7 @@
 ##
 ##    for i in place:
 ##        o=random.randint(0,n*n-1)
-##        l=random.randint(0,n*n-1)
-##        if o!=l:
-##                s[o]='w'
+##        l=random.rand 'w'
 ##                s[l]='b'
 ##    
 ##    print "NEXT" + str(n)
