@@ -12,18 +12,7 @@ def l2err(prediction,ytest):
     """ l2 error (i.e., root-mean-squared-error) """
     return np.linalg.norm(np.subtract(prediction,ytest))
 
-def l1err(prediction,ytest):
-    """ l1 error """
-    return np.linalg.norm(np.subtract(prediction,ytest),ord=1) 
 
-def l2err_squared(prediction,ytest):
-    """ l2 error squared """
-    return np.square(np.linalg.norm(np.subtract(prediction,ytest)))
-
-def geterror(predictions, ytest):
-    # Can change this to other error values
-    # return l2err_squared(predictions,ytest)/ytest.shape[0] + .01*np.dot(weights.T, weights)
-    return l2err(predictions,ytest)/ytest.shape[0]
 
 
 
