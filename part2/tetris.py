@@ -202,7 +202,7 @@ class ComputerPlayer:
 		#print(list1)
 		for values in list1:
 			sumVal += values
-		print(sumVal)
+		#print(sumVal)
 		for i in range(0,10):
                         count = 0
                         for j in range(0, 20):
@@ -217,7 +217,7 @@ class ComputerPlayer:
 		sumVal2 = 0
 		for values in list1:
 			sumVal2 += values
-		print(sumVal2)
+		#print(sumVal2)
 		if(sumVal > sumVal2):
 			newBoardList[elements] += (sumVal-sumVal2)*(-3.0)
 		#elif( sumVal2 > sumVal):
@@ -315,7 +315,7 @@ class ComputerPlayer:
 	temp_dict = {}
 	for val in newBoardList:
 		temp_dict[val] = newBoardList[val][1]
-	print(temp_dict)
+	#print(temp_dict)
 	return(max(temp_dict, key=(lambda key: temp_dict[key])))
 	#print(newBoardList)
 	'''
@@ -414,17 +414,26 @@ class ComputerPlayer:
             time.sleep(0.1)
 
             board = tetris.get_board()
+	    '''
             column_heights = [ min([ r for r in range(len(board)-1, 0, -1) if board[r][c] == "x"  ] + [100,] ) for c in range(0, len(board[0]) ) ]
             index = column_heights.index(max(column_heights))
-	    print(board.get_next_piece)
-
+	    
             if(index < tetris.col):
                 tetris.left()
             elif(index > tetris.col):
                 tetris.right()
             else:
-                tetris.down()
-
+                tetris.down()'''
+	    strVal = self.checkPermutations(board, tetris)
+	    #print(strVal)
+	    for i in range(0, len(strVal)):
+	    	if(strVal[i] == "b"):
+	    		tetris.left()
+	   	elif(strVal[i] == "m"):
+			tetris.right()
+		elif(strVal[i] == "n"):
+			tetris.rotate()
+	    tetris.down()
 
 ###################
 #### main program
