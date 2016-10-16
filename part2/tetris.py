@@ -59,12 +59,12 @@ class ComputerPlayer:
                                 count += 1
 			if(orig_board[19][i] == "x"):
 				count2 += 1
-		print("Orig",count2,"new",count)
+		#print("Orig",count2,"new",count)
 		if(count2 > count):
 			newBoardList[elements][1] = 10+count
 			countList[elements] = 10+count
 		else:
-			newBoardList[elements][1] = (2.0)*count
+			newBoardList[elements][1] = (3.0)*count
                 	countList[elements] = count
         #print("before", countList)
         #print("count value", count)
@@ -95,7 +95,7 @@ class ComputerPlayer:
                         	newBoardList[elements][1] = 10+count
                         	countList[elements] = 10+count
 			else:
-				newBoardList[elements][1] = (2.0)*count
+				newBoardList[elements][1] = (3.0)*count
                         	countList[elements] = count
                 #print("inside j count", countList)
                 j += 1
@@ -125,7 +125,7 @@ class ComputerPlayer:
 		#oldCount = newBoardList[elements][1]
 		#count = oldCount + (-2.0)*count
 		if(final_count > final_count2):
-			newBoardList[elements][1] += -10.0
+			newBoardList[elements][1] += (final_count - final_count2)*(-20.0)
 	return newBoardList
 
     def checkIfTouchingWall(self, newBoardList, tetris_orig):
@@ -143,7 +143,7 @@ class ComputerPlayer:
 			if(orig_board[i][9] == "x"):
 				count2 += 1
 		if(count > count2):
-			newBoardList[elements][1] += 0.5
+			newBoardList[elements][1] += (count - count2)*(0.5)
 	return newBoardList
 
     def checkTouchingGround(self, newBoardList, tetris_orig):
@@ -157,7 +157,7 @@ class ComputerPlayer:
 			if(orig_board[19][i] == "x"):
 				count2 += 1
 		if(count > count2):
-			newBoardList[elements][1] += 5.0
+			newBoardList[elements][1] += (count-count2)*(10.0)
 	return newBoardList 
 
     def calculateHoles(self, newBoardList, tetris_orig):
@@ -178,7 +178,7 @@ class ComputerPlayer:
 			if(count2 != 0):
 				holes2 += 10-count2
 		if(holes > holes2):
-			newBoardList[elements][1] += -3.0
+			newBoardList[elements][1] += -1.0
 	return newBoardList
 
 
@@ -198,7 +198,7 @@ class ComputerPlayer:
 		#board2 = copy.deepcopy(board1)
 			pieceInfo = tetris1.get_piece()
 			pieceColumn = pieceInfo[2]
-			print("piece column", pieceColumn)
+			#print("piece column", pieceColumn)
 			string_commands_copy = string_commands
 			tetris2 = copy.deepcopy(tetris1)
 			for i in range(0, pieceColumn):
@@ -211,8 +211,8 @@ class ComputerPlayer:
 				tetris2 = copy.deepcopy(tetris1)
 			string_commands_copy = string_commands
 			tetris2 = copy.deepcopy(tetris1)
-			for i in range(pieceColumn, 10):
-				for j in range(pieceColumn, 10):
+			for i in range(0, 10-pieceColumn):
+				for j in range(0, i):
 					tetris2.right()
 					string_commands_copy += "m"
 				tetris2.down()
@@ -252,17 +252,22 @@ class ComputerPlayer:
 		tetris1.down()
 		newBoardList[string_commands] = [tetris1.get_board(),0]
 		#print(newBoardList)'''
-	print(newBoardList)
+	#print(newBoardList)
 	newBoardList = self.calculateNumberOfXs(newBoardList, tetris_orig)
-	print(newBoardList)
+	#print(newBoardList)
 	newBoardList = self.calculateAggregateHeight(newBoardList, tetris_orig)
+	temp_dict = {}
+        for val in newBoardList:
+                temp_dict[val] = newBoardList[val][1]
+        #print("Height",temp_dict)
+
 	newBoardList = self.checkIfTouchingWall(newBoardList, tetris_orig)
 	newBoardList = self.calculateHoles(newBoardList, tetris_orig)
 	newBoardList = self.checkTouchingGround(newBoardList, tetris_orig)
 	temp_dict = {}
 	for val in newBoardList:
 		temp_dict[val] = newBoardList[val][1]
-	print(temp_dict)
+	#print(temp_dict)
 	return(max(temp_dict, key=(lambda key: temp_dict[key])))
 	#print(newBoardList)
 	'''
