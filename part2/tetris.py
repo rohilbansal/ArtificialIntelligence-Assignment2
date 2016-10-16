@@ -103,6 +103,21 @@ class ComputerPlayer:
 	print(newBoardList)
 	return newBoardList
 	#return(max(countList.iteritems(), key=operator.itemgetter(1))[0])
+    
+    def calculateAggregateHeight(self, newBoardList, tetris_orig):
+	for elements in newBoardList:
+		count = 0
+		for i in range(0,10):
+			for j in range(0,20):
+				if(newBoardList[elements][0][j][i] == "x"):
+					count += 20-j
+					break;
+		oldCount = newBoardList[elements][1]
+		count = oldCount + (-0.03)*count
+		newBoardList[elements][1] = count
+	return newBoardList
+		
+				
 
 
     def checkPermutations(self, board, tetris_orig):
@@ -137,6 +152,8 @@ class ComputerPlayer:
 		newBoardList[string_commands] = [tetris1.get_board(),0]
 		#print(newBoardList)
 	newBoardList = self.calculateNumberOfXs(newBoardList, tetris_orig)
+	print(newBoardList)
+	newBoardList = self.calculateAggregateHeight(newBoardList, tetris_orig)
 	temp_dict = {}
 	for val in newBoardList:
 		temp_dict[val] = newBoardList[val][1]
