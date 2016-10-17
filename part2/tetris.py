@@ -22,6 +22,37 @@ class HumanPlayer:
 # This is the part you'll want to modify!
 # Replace our super simple algorithm with something better
 #
+# My main approach to of formulating this search algorithm was that I will try to find the all the possible permutations of 
+# all the possible moves on the board and then calculate the best available move based on the score calculated by my heuristics.
+# State space: The state space if my whole 10x20 board
+# Successor Function : The successor function is my piece that is to be placed on the board, that is the current piece
+# Edge Weights: Although all the moves have equal edge weights in general, but when my algorithm works, it assigns 
+# a score to every move and then based on that score, the algorithm decides to proceed with the move with the maximum score. Then 
+# in that sense, there is a weight or a score attached to every move.
+# Heuristic Functions: I have formulated quite a few heuristic functions which will calculate the score for every move:
+#    	1) Maximum number of X’s: This heuristic evaluates every move and if any move places or increases number of X’s starting from the 
+#          bottom level, then a good score is assigned to that move. And suppose if any move reduces the number of X’s at some level, then 
+#          that means some line completion must’ve occurred and then that move is given a high good score because we want to achieve as high score as possible.
+#)	2) Calculate Wells: The wells or depressions in the board in undesired. For eg. If column has height of 15 and column 2 has height 1 and 
+#          again column 3 has height of 13, then that mean a kind of depression has been created on our board. And any move which helps in the 
+#          creation of a depression is penalized.
+#)	3) Calculate aggregate height: The aggregate height of the board is calculated for every move and then it is compared with the aggregate 
+#          height of the original board. If our move increases the aggregate height of our board, then that move is penalized.
+#)	4) Calculate holes: Holes are small squares in the board which has no X’s but they are covered with X’s from all 4 sides. These holes 
+#          are harder to fill and hence are undesired and any move which creates holes is penalized
+#)	5) Touching the floor: Any move which makes the piece fall on the floor is rewarded, because a piece falling on the floor means that 
+#          the piece is closer to the ground and has no height.
+#
+# Question 2:
+# the search algorithm first tries to calculate all the possible permutations of the moves, i.e where and how the piece can be placed on the board. Thses
+# permutations are added to a dictionary with key as the moves needed to achieve that state say "nnmmmm" and the value is a list which contains the state
+# of the board after executing that move and a score attached ot it which is initialized as 0. then that dictionary is passed to every heuristic which then
+# calculates the score based on the conditions. The move with the highest score is chosen and if two moves have the same score, then then any move is
+# chosen at random.
+#
+# Question 3: Initially i faced some problems with python programming, because I'm relatively new to python and I am not familiar with how python
+# deals with object oriented concepts. Also finding the permutations of all the moves was a bit harder initially.
+
 class ComputerPlayer:
     # This function should generate a series of commands to move the piece into the "optimal"
     # position. The commands are a string of letters, where b and m represent left and right, respectively,
