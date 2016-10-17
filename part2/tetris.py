@@ -43,6 +43,7 @@ class HumanPlayer:
 #)	5) Touching the floor: Any move which makes the piece fall on the floor is rewarded, because a piece falling on the floor means that 
 #          the piece is closer to the ground and has no height.
 #
+#
 # Question 2:
 # the search algorithm first tries to calculate all the possible permutations of the moves, i.e where and how the piece can be placed on the board. Thses
 # permutations are added to a dictionary with key as the moves needed to achieve that state say "nnmmmm" and the value is a list which contains the state
@@ -52,6 +53,11 @@ class HumanPlayer:
 #
 # Question 3: Initially i faced some problems with python programming, because I'm relatively new to python and I am not familiar with how python
 # deals with object oriented concepts. Also finding the permutations of all the moves was a bit harder initially.
+# Also, one assumption that my program makes is that all the pieces are equally probable which is quite not the case but this is one assumption. Also secondly,
+# the rewards or the penalty assigned to any heuristic is purely based on gut feeling and just assumed how good a penalty or a reward should be
+# given the particular heuristic and the conditions.
+# References: For designing the heuristic functions, the follwing website came in handy:
+# https://luckytoilet.wordpress.com/2011/05/27/coding-a-tetris-ai-using-a-genetic-algorithm/
 
 class ComputerPlayer:
     # This function should generate a series of commands to move the piece into the "optimal"
